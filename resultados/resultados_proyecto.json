@@ -1,0 +1,163 @@
+{
+  "identificacion_materias_primas": {
+    "Price_X": {
+      "commodity": "Petroleo crudo Brent",
+      "confianza": "alta",
+      "evidencia": "Dos coincidencias exactas de fecha y precio con fuentes primarias (Portafolio, Statista): minimo de 19.33 USD/barril el 21-abr-2020, maximo de 127.98 USD/barril el 8-mar-2022."
+    },
+    "Price_Y": {
+      "commodity": "Acero laminado en caliente (HRC), exportacion China FOB",
+      "confianza": "alta",
+      "evidencia": "Tres coincidencias exactas de fecha y precio con articulos originales de Fastmarkets, en anos independientes (2015, 2018, 2019)."
+    },
+    "Price_Z": {
+      "commodity": "Aluminio, London Metal Exchange (LME)",
+      "confianza": "alta",
+      "evidencia": "Coincidencia casi exacta con la tabla oficial de liquidacion del LME (Westmetall) el 7-mar-2022."
+    }
+  },
+  "seleccion_de_variables": {
+    "Price_Equipo1": {
+      "variable_dominante": "Price_Y",
+      "correlacion_en_niveles": 0.997,
+      "correlacion_en_retornos": 0.378,
+      "importancia_en_modelo_conjunto_pct": 63.5,
+      "mejora_del_modelo_vs_baseline_pct": 8.8,
+      "nota": "Price_X (petroleo) es la variable mas debil para este equipo bajo las 2 tecnicas usadas."
+    },
+    "Price_Equipo2": {
+      "variable_dominante": "Price_Z",
+      "correlacion_en_niveles": 0.983,
+      "correlacion_en_retornos": 0.395,
+      "importancia_en_modelo_conjunto_pct": 53.7,
+      "mejora_del_modelo_vs_baseline_pct": 8.2,
+      "nota": "Price_X (petroleo) es la variable mas debil para este equipo bajo las 2 tecnicas usadas."
+    }
+  },
+  "verificacion_relacion_niveles": {
+    "descripcion": "Se verifico que la fuerte correlacion en niveles no fuera una coincidencia estadistica (correlacion espuria), mediante una regresion simple mas una prueba de estacionariedad sobre sus residuos.",
+    "Price_Equipo1_vs_Price_Y": {
+      "ecuacion": "Price_Equipo1 = 5.56 + 0.818 * Price_Y",
+      "intercepto_a": 5.564599,
+      "coeficiente_b": 0.818092,
+      "precio_actual_materia_prima": 545.0,
+      "r2": 0.993,
+      "p_valor_prueba_estacionariedad": 0.0028,
+      "relacion_confirmada_como_real": true
+    },
+    "Price_Equipo2_vs_Price_Z": {
+      "ecuacion": "Price_Equipo2 = -22.41 + 0.448 * Price_Z",
+      "intercepto_a": -22.405556,
+      "coeficiente_b": 0.447812,
+      "precio_actual_materia_prima": 2165.25,
+      "r2": 0.966,
+      "p_valor_prueba_estacionariedad": 0.0034,
+      "relacion_confirmada_como_real": true
+    }
+  },
+  "proyeccion_de_costos": {
+    "fecha_del_ultimo_dato_historico": "2023-08-31",
+    "metodologia": "Simulacion por remuestreo (bootstrap) de retornos historicos de la materia prima dominante, combinada con la relacion de niveles confirmada, mas el ruido propio de esa relacion.",
+    "horizonte_recomendado_dias": 30,
+    "intervalo_de_confianza": "90%",
+    "Price_Equipo1": {
+      "precio_actual": 451.73,
+      "proyecciones": [
+        {
+          "horizonte_dias": 5,
+          "precio_estimado": 451.37,
+          "rango_90pct": [
+            429.59,
+            474.01
+          ]
+        },
+        {
+          "horizonte_dias": 10,
+          "precio_estimado": 451.1,
+          "rango_90pct": [
+            424.52,
+            479.43
+          ]
+        },
+        {
+          "horizonte_dias": 15,
+          "precio_estimado": 451.0,
+          "rango_90pct": [
+            420.14,
+            485.32
+          ]
+        },
+        {
+          "horizonte_dias": 20,
+          "precio_estimado": 451.46,
+          "rango_90pct": [
+            416.84,
+            489.28
+          ]
+        },
+        {
+          "horizonte_dias": 30,
+          "precio_estimado": 451.05,
+          "rango_90pct": [
+            409.3,
+            498.83
+          ]
+        }
+      ]
+    },
+    "Price_Equipo2": {
+      "precio_actual": 955.35,
+      "proyecciones": [
+        {
+          "horizonte_dias": 5,
+          "precio_estimado": 946.41,
+          "rango_90pct": [
+            879.8,
+            1015.85
+          ]
+        },
+        {
+          "horizonte_dias": 10,
+          "precio_estimado": 946.65,
+          "rango_90pct": [
+            863.45,
+            1034.48
+          ]
+        },
+        {
+          "horizonte_dias": 15,
+          "precio_estimado": 946.94,
+          "rango_90pct": [
+            851.44,
+            1044.93
+          ]
+        },
+        {
+          "horizonte_dias": 20,
+          "precio_estimado": 946.7,
+          "rango_90pct": [
+            837.4,
+            1060.5
+          ]
+        },
+        {
+          "horizonte_dias": 30,
+          "precio_estimado": 943.73,
+          "rango_90pct": [
+            820.45,
+            1079.94
+          ]
+        }
+      ]
+    }
+  },
+  "hallazgos_clave": [
+    "Price_Y explica el 63.5% de la importancia total para predecir Price_Equipo1; Price_Z explica el 53.7% para Price_Equipo2.",
+    "Un modelo de forecasting sobre retornos (Random Forest) no logro superar a un baseline naive en ningun horizonte probado, lo cual llevo a usar la relacion de niveles (confirmada como real, no espuria) como base de la proyeccion final."
+  ],
+  "limitaciones": [
+    "La proyeccion asume que la relacion historica entre materia prima y equipo se mantiene estable en el futuro.",
+    "La simulacion asume que el comportamiento futuro de la materia prima sera similar, en distribucion, al historico reciente.",
+    "Mas alla de 30 dias, el intervalo de confianza se vuelve demasiado amplio para ser accionable en la practica."
+  ]
+}
